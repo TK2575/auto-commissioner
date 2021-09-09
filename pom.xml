@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <name>auto-commissioner</name>
-    <description>A simple auto-commissioner.</description>
+    <description>Java app utilizing Selenium to automate Yahoo Fantasy Football commissioner actions</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

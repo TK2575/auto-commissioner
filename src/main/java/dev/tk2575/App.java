@@ -10,7 +10,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
@@ -23,7 +22,7 @@ public class App {
 	private static final String YAHOO_FANTASY_FOOTBALL_URL = "https://football.fantasysports.yahoo.com/f1";
 	private static final String EDIT_SETTINGS_CONTEXT = "editleaguesettings";
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		String waiverRuleValue = args[0];
 		if (waiverRuleValue == null || !Set.of("all","continuous").contains(waiverRuleValue)) {
 			throw new IllegalArgumentException("expecting waiver rule value argument of either \"all\" or \"continuous\"");
