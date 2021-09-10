@@ -23,10 +23,15 @@ public class App {
 	private static final String EDIT_SETTINGS_CONTEXT = "editleaguesettings";
 
 	public static void main(String[] args) throws Exception {
+		if (args.length == 0) {
+			throw new IllegalArgumentException("expecting waiver rule value argument of either \"all\" or \"continuous\"");
+		}
+
 		String waiverRuleValue = args[0];
 		if (waiverRuleValue == null || !Set.of("all","continuous").contains(waiverRuleValue)) {
 			throw new IllegalArgumentException("expecting waiver rule value argument of either \"all\" or \"continuous\"");
 		}
+
 		updateWaiverRule(Configuration.getInstance(), waiverRuleValue);
 	}
 
