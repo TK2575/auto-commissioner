@@ -13,6 +13,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
@@ -41,7 +42,7 @@ public class App {
 		}
 	}
 
-	public static void login(@NonNull Configuration config) throws MalformedURLException {
+	public static void login(@NonNull Configuration config) throws MalformedURLException, InterruptedException {
 		log.info("Attempting login");
 		log.info("username=" + config.getUsername());
 		log.info("leagueId=" + config.getLeagueId());
@@ -59,6 +60,8 @@ public class App {
 
 			wait.until(presenceOfElementLocated(By.cssSelector("#password-container")));
 			driver.findElement(By.id("login-passwd")).sendKeys(config.getPassword() + Keys.ENTER);
+
+			TimeUnit.SECONDS.sleep(10);
 		}
 		finally {
 			driver.quit();
