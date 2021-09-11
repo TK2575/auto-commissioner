@@ -28,11 +28,41 @@ public class App {
 		}
 
 		String waiverRuleValue = args[0];
-		if (waiverRuleValue == null || !Set.of("all","continuous").contains(waiverRuleValue)) {
-			throw new IllegalArgumentException("expecting waiver rule value argument of either \"all\" or \"continuous\"");
-		}
 
-		updateWaiverRule(Configuration.getInstance(), waiverRuleValue);
+		if (waiverRuleValue != null && waiverRuleValue.equalsIgnoreCase("login")) {
+			login(Configuration.getInstance());
+		}
+		else {
+			if (waiverRuleValue == null || !Set.of("all","continuous").contains(waiverRuleValue)) {
+				throw new IllegalArgumentException("expecting waiver rule value argument of either \"all\" or \"continuous\"");
+			}
+
+			updateWaiverRule(Configuration.getInstance(), waiverRuleValue);
+		}
+	}
+
+	public static void login(@NonNull Configuration config) throws MalformedURLException {
+		log.info("Attempting login");
+		log.info("username=" + config.getUsername());
+		log.info("leagueId=" + config.getLeagueId());
+		log.info("seleniumUrl=" + config.getSeleniumUrl());
+
+		WebDriver driver = new RemoteWebDriver(new URL(config.getSeleniumUrl()), new FirefoxOptions());
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		String url = String.join("/", YAHOO_FANTASY_FOOTBALL_URL, config.getLeagueId());
+
+		try {
+			driver.get(url);
+
+			wait.until(presenceOfElementLocated(By.id("login-username")));
+			driver.findElement(By.id("login-username")).sendKeys(config.getUsername() + Keys.ENTER);
+
+			wait.until(presenceOfElementLocated(By.cssSelector("#password-container")));
+			driver.findElement(By.id("login-passwd")).sendKeys(config.getPassword() + Keys.ENTER);
+		}
+		finally {
+			driver.quit();
+		}
 	}
 
 	public static void updateWaiverRule(@NonNull Configuration config, @NonNull String waiverRuleValue) throws MalformedURLException {
