@@ -29,16 +29,35 @@ public class App {
 		}
 
 		String waiverRuleValue = args[0];
+		Configuration config = Configuration.getInstance();
 
 		if (waiverRuleValue != null && waiverRuleValue.equalsIgnoreCase("login")) {
-			login(Configuration.getInstance());
+			login(config);
 		}
 		else {
 			if (waiverRuleValue == null || !Set.of("all","continuous").contains(waiverRuleValue)) {
 				throw new IllegalArgumentException("expecting waiver rule value argument of either \"all\" or \"continuous\"");
 			}
 
-			updateWaiverRule(Configuration.getInstance(), waiverRuleValue);
+			updateWaiverRuleWithRetries(config, waiverRuleValue);
+		}
+	}
+
+	private static void updateWaiverRuleWithRetries(Configuration config, String waiverRuleValue) throws Exception {
+		Exception ex = null;
+		for (int i = 0; i < 3; i++) {
+			try {
+				updateWaiverRule(config, waiverRuleValue);
+				ex = null;
+				break;
+			}
+			catch (Exception e) {
+				ex = e;
+				Thread.sleep(60L * 1000L); //pause for a minute
+			}
+		}
+		if (ex != null) {
+			throw ex;
 		}
 	}
 
