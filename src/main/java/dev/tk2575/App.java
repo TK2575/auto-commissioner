@@ -22,25 +22,30 @@ public class App {
 
 	private static final String YAHOO_FANTASY_FOOTBALL_URL = "https://football.fantasysports.yahoo.com/f1";
 	private static final String EDIT_SETTINGS_CONTEXT = "editleaguesettings";
+	private static final Set<String> WAVIER_RULES = Set.of("all", "none", "suntue", "firsttue", "gametime", "continuous");
 
 	public static void main(String[] args) throws Exception {
-		if (args.length == 0) {
-			throw new IllegalArgumentException("expecting waiver rule value argument of either \"all\" or \"continuous\"");
+		if (args.length == 0 || args[0] == null) {
+			throw illegalArgumentException();
 		}
 
-		String waiverRuleValue = args[0];
+		String waiverRuleValue = args[0].toLowerCase();
 		Configuration config = Configuration.getInstance();
 
-		if (waiverRuleValue != null && waiverRuleValue.equalsIgnoreCase("login")) {
+		if (waiverRuleValue.equalsIgnoreCase("login")) {
 			login(config);
 		}
 		else {
-			if (waiverRuleValue == null || !Set.of("all","continuous").contains(waiverRuleValue)) {
-				throw new IllegalArgumentException("expecting waiver rule value argument of either \"all\" or \"continuous\"");
+			if (!WAVIER_RULES.contains(waiverRuleValue)) {
+				throw illegalArgumentException();
 			}
 
-			updateWaiverRuleWithRetries(config, waiverRuleValue);
+			updateWaiverRuleWithRetries(config, waiverRuleValue.equals("none") ? "all" : waiverRuleValue);
 		}
+	}
+
+	private static IllegalArgumentException illegalArgumentException() {
+		return new IllegalArgumentException("expecting waiver rule value argument. Valid arguments include: " + String.join(", ", WAVIER_RULES));
 	}
 
 	private static void updateWaiverRuleWithRetries(Configuration config, String waiverRuleValue) throws Exception {
